@@ -15,7 +15,6 @@ async def get_post_info(link: str):
         await bot.connect()
         async with Rubino:
             result = await Rubino.get_post_by_share_link(link)
-        await bot.disconnect()
         post = result['post']
         data.update({
             "success": result['has_access'],
@@ -33,4 +32,6 @@ async def get_post_info(link: str):
             "success": False,
             "error": str(e)
         })
-    return Response(content=json.dumps(data, indent=4, ensure_ascii=False), media_type="application/json")
+    finally:
+        await bot.disconnect()
+    return Response(content=json.dumps(data, ensure_ascii=False), media_type="application/json")
